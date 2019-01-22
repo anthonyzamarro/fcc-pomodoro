@@ -20,8 +20,8 @@ class Session extends Component {
     let minutes = this.props.sessMinutes === 0 ? '00' : this.props.sessMinutes;
     return (
       <div className="session">
-      <h3 className="session_time">REAL Session Time!</h3>
-        {minutes}:{seconds}
+      <h3 id="timer-label">Session Time!</h3>
+        <span id="time-left">{minutes}:{seconds}</span>
       </div>
     );
   }

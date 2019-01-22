@@ -23,8 +23,8 @@ class Break extends Component {
     let minutes = this.props.brkMinutes === 0 ? '00' : this.props.brkMinutes;
     return (
       <div className="break">
-      <h3 className="breal_time">REAL Break Time!</h3>
-        {minutes}:{seconds}
+      <h3 id="break-label">Break Time!</h3>
+        <span id="time-left">{minutes}:{seconds}</span>
       </div>
     );
   }
