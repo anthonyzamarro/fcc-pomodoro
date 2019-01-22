@@ -12,3 +12,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.pomodoro {
+  display: grid;
+  grid-template-columns: repeat(3, 33% [col]);
+  grid-template-rows: repeat(3, 500px, [row]);
+}
+.break-container,
+.session-container {
+  grid-column: 2/3;
+  grid-row: 2/2;
+}
+.reset {
+  grid-column: 2/3;
+  grid-row: 3/3;
+}
+.start-stop {
+  grid-column: 1/3;
+  grid-row: 1/2;
+}
+.s-di {
+  grid-column: 3/3;
+}
