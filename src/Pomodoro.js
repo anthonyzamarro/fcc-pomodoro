@@ -110,27 +110,41 @@ class Pomodoro extends Component {
   };
   playAudio = () => {
     if (this.state.triggerAudio) {
-      this.promise = document.querySelector("#beep").play();
-      this.promise.currentTimer = 0;
-      if (this.promise !== undefined) {
-        this.promise
-          .then(_ => {
-            // Autoplay started!
-            // console.log('success',_, promise);
-          })
-          .catch(error => {
-            // Autoplay was prevented.
-            // Show a "Play" button so that user can start playback.
-            console.log("error", error, this.promise);
-          });
-      }
+      this.promise = document.querySelector("#beep");
+      this.promise.play();
+      setTimeout(() => {
+        this.promise.pause();
+        this.setState(prevState => ({
+          breakMounted: !prevState.breakMounted,
+          startMounted: !prevState.startMounted,
+        }));
+        if (this.state.breakMounted) {
+          this.startStopBreak();
+        } else if (this.state.startMounted) {
+          this.startStopSession();
+        }
+      }, 2000);
+      this.promise.currentTime = 0;
+    //   if (this.promise !== undefined) {
+    //     this.promise
+    //       .then(_ => {
+    //         // Autoplay started!
+    //         // console.log('success',_, promise);
+    //       })
+    //       .catch(error => {
+    //         // Autoplay was prevented.
+    //         // Show a "Play" button so that user can start playback.
+    //         console.log("error", error, this.promise);
+    //       });
+    //   }
     }
+    
   };
   startStopSession = () => {
     this.setState({
       triggerAudio: false
     });
-    const initialMinutes = this.initialState.sessionMinutes;
+    // const initialMinutes = this.initialState.sessionMinutes;
     // console.log(this.initialState, initialMinutes);
     this.sessionIntervalId = setInterval(() => {
       this.setState({
@@ -141,11 +155,12 @@ class Pomodoro extends Component {
         clearInterval(this.sessionIntervalId);
         this.setState({
           triggerAudio: true,
-          breakMounted: true,
-          startMounted: false,
+          // breakMounted: true,
+          // startMounted: false,
           // sessionSeconds: 60,
-          sessionMinutes: initialMinutes
+          sessionMinutes: this.initialState.sessionMinutes
         });
+        this.playAudio();
         // this.startStopBreak();
         // this.setState({
         //   sessionSeconds: 60
@@ -172,16 +187,17 @@ class Pomodoro extends Component {
       if (this.state.breakSeconds === 0 && this.state.breakMinutes === 0) {
         this.setState({
           triggerAudio: true,
-          breakMounted: false,
-          startMounted: true,
-          startStop: true,
+          // breakMounted: false,
+          // startMounted: true,
+          // startStop: true,
           // breakSeconds: 60,
           breakMinutes: this.initialState.breakMinutes
         });
-        this.startStopSession();
-        this.setState({
-          breakSeconds: 60
-        });
+        this.playAudio();
+        // this.startStopSession();
+        // this.setState({
+        //   breakSeconds: 60
+        // });
         clearInterval(this.breakIntervalId);
       }
       // seconds === 0, but minutes !== 0, subtract 1 from minutes and reset seconds
@@ -258,7 +274,7 @@ class Pomodoro extends Component {
           src={alarm}
           id="beep"
           value="audio"
-          fuckingplay={this.playAudio()}
+          // fuckingplay={this.playAudio}
           type="audio/mp3"
         />
       </div>
