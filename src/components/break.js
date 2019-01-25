@@ -18,10 +18,4 @@ class Break extends Component {
   }
 }
 
-/*
-  if Break component is mounted and startStop
-  button is clicked, then pause timer. The
-  compoent MUST be mounted.
-*/
-
 export default Break;
