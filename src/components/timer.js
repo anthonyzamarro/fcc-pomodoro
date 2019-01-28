@@ -21,8 +21,8 @@ class Timer extends Component {
         }
     return (
       <div className="timer">
-        <h3 id="timer-label">{timeTitle}</h3>
-        <div id="time-left">{minutes}:{seconds}</div>
+        <h3 id="timer-label" className="tc timer-label">{timeTitle}</h3>
+        <div id="time-left" className="tc time-left">{minutes}:{seconds}</div>
       </div>
     );
   }

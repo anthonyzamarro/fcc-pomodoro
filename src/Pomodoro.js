@@ -142,30 +142,28 @@ class Pomodoro extends Component {
     return (
       <div className="pomodoro">
         <div className="b-di">
-          <div id="break-decrement" onClick={this.handleBreakLengthDecrement}>
-            Break Decrement
+          <h3 id="break-label" className="label-b-di">Break Length</h3>
+          <div className="di-container-inner">
+            <div id="break-decrement" className="di b-di-1" onClick={this.handleBreakLengthDecrement}>
+              ↓
+            </div>
+            <div id="break-increment" className="di b-di-2" onClick={this.handleBreakLengthIncrement}>
+              ↑
+            </div>
           </div>
-          <div id="break-increment" onClick={this.handleBreakLengthIncrement}>
-            Break Increment
-          </div>
-          <h3 id="break-label">Break Length</h3>
-          <div id="break-length">{this.state.breakLength}</div>
+          <div id="break-length" className="di-num num-b-di">{this.state.breakLength}</div>
         </div>
         <div className="s-di">
-          <div
-            id="session-decrement"
-            onClick={this.handleSessionLengthDecrement}
-          >
-            Session Decrement
+          <h3 id="session-label" className="label-s-di">Session Length</h3>
+          <div className="di-container-inner">
+            <div id="session-decrement" className="di s-di-1" onClick={this.handleSessionLengthDecrement}>
+              ↓
+            </div>
+            <div id="session-increment" className="di s-di-2" onClick={this.handleSessionLengthIncrement}>
+              ↑
+            </div>
           </div>
-          <div
-            id="session-increment"
-            onClick={this.handleSessionLengthIncrement}
-          >
-            Session Increment
-          </div>
-          <h3 id="session-label">Session Length</h3>
-          <div id="session-length">{this.state.sessionLength}</div>
+          <div id="session-length" className="di-num num-s-di">{this.state.sessionLength}</div>
         </div>
         <Timer
           startTime={this.startStopTimer}
@@ -173,15 +171,13 @@ class Pomodoro extends Component {
           timerSeconds={this.state.timeSeconds}
           sessionMounted={this.state.sessionMounted}
         />
-        <div
-          id="start_stop"
-          className="start-stop"
-          onClick={this.handleStartStop}
-        >
-        Start/Pause
-        </div>
-        <div id="reset" className="reset" onClick={this.handleReset}>
-          Reset
+        <div className="spr">
+          <div id="start_stop" className="start-stop" onClick={this.handleStartStop}>
+          Start/Pause
+          </div>
+          <div id="reset" className="reset" onClick={this.handleReset}>
+            Reset
+          </div>
         </div>
         <audio src={alarm} id="beep" />
       </div>

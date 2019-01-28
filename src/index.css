@@ -1,35 +1,79 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
 .pomodoro {
   display: grid;
-  grid-template-columns: repeat(3, 33% [col]);
-  grid-template-rows: repeat(3, 500px, [row]);
-}
-.break-container,
-.session-container {
-  grid-column: 2/3;
-  grid-row: 2/2;
-}
-.reset {
-  grid-column: 2/3;
-  grid-row: 3/3;
-}
-.start-stop {
-  grid-column: 1/3;
-  grid-row: 1/2;
-}
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  grid-template-areas: "time time" "dec-inc dec-inc";
+  border: 3px solid gray;
+  border-radius: 5px; }
+
+h3 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  margin-top: 8px;
+  text-align: center; }
+
+.timer {
+  grid-area: time/span 1;
+  grid-column: 2; }
+
+.time-left {
+  font-size: 55px; }
+
+.spr {
+  justify-self: flex-end;
+  align-self: center;
+  grid-area: dec-inc / 2;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  width: 100%; }
+
+.b-di {
+  grid-area: dec-inc/1; }
+
 .s-di {
-  grid-column: 3/3;
-}
+  grid-area: dec-inc / 3; }
+
+.di {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 24px;
+  background: #ededed;
+  border-radius: 3px; }
+
+.tc {
+  text-align: center; }
+
+.label-b-di {
+  text-align: center; }
+
+.di-container-inner {
+  text-align: center; }
+
+.b-di-1,
+.s-di-1 {
+  margin: 0 12px; }
+
+.di-num {
+  font-size: 55px; }
+
+.num-s-di {
+  text-align: center; }
+
+.num-b-di {
+  text-align: center; }
+
+@media screen and (max-width: 600px) {
+  h3 {
+    font-size: 18px; }
+
+  .time-left,
+  .di-num {
+    font-size: 40px; }
+
+  .spr {
+    flex-direction: column;
+    text-align: center; } }
+
+/*# sourceMappingURL=index.css.map */
