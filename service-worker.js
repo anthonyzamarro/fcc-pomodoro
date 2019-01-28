@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/fcc-pomodoro/precache-manifest.651f83b709a359ad52d44698682f09e0.js"
+  "/fcc-pomodoro/precache-manifest.598c8be06d2bee62ab2a63aff8fcb302.js"
 );
 
 workbox.clientsClaim();
