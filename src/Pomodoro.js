@@ -1,81 +1,68 @@
 import React, { Component } from "react";
-import Break from "./components/break.js";
-import Session from "./components/session.js";
+import Timer from "./components/timer.js";
 import alarm from "./audio/alarm.mp3";
 
 class Pomodoro extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      breakSeconds: 60,
-      breakMinutes:5,
       breakLength: 5,
-      breakMounted: false,
-      sessionMinutes: 25,
       sessionLength: 25,
-      sessionSeconds: 60,
       startStop: false,
-      pauseBreak: false,
-      startMounted: true,
-      // triggerAudio: false
+      sessionMounted: true,
+      timeMinutes: 25,
+      timeSeconds: 60,
+      subOne: 0
     };
-    this.startStopSession = this.startStopSession.bind(this);
+    this.startStopTimer = this.startStopTimer.bind(this);
   }
   componentDidMount() {
     //set initialState so we can reset if needed
     this.initialState = this.state;
+    this.promise = document.querySelector("#beep"); 
   }
-  handleSessionDecrement = () => {
-    this.setState({
-      sessionMinutes: this.state.sessionMinutes - 1
-    });
-    if (this.state.sessionMinutes <= 1) this.setState({ sessionMinutes: 1 });
-  };
   handleSessionLengthDecrement = () => {
-    this.setState({
-      sessionLength: this.state.sessionLength - 1
-    });
-    this.handleSessionDecrement();
-    if (this.state.sessionLength <= 1) this.setState({ sessionLength: 1 });
-  };
-  handleSessionIncrement = () => {
-    this.setState({
-      sessionMinutes: this.state.sessionMinutes + 1
-    });
-    if (this.state.sessionMinutes >= 60) this.setState({ sessionMinutes: 60 });
+    if (this.state.startStop === false) {
+      if (this.state.sessionMounted) {
+        this.setState({
+          timeMinutes: this.state.timeMinutes - 1
+        });
+      }
+      this.setState({
+        sessionLength: this.state.sessionLength - 1
+      });
+      if (this.state.sessionLength <= 1) this.setState({ sessionLength: 1 });
+      if (this.state.timeMinutes <= 1) this.setState({ timeMinutes: 1 });
+    }
   };
   handleSessionLengthIncrement = () => {
-    this.setState({
-      sessionLength: this.state.sessionLength + 1
-    });
-    this.handleSessionIncrement();
-    if (this.state.sessionLength >= 60) this.setState({ sessionLength: 60 });
-  };
-  handleBreakDecrement = () => {
-    this.setState({
-      breakMinutes: this.state.breakMinutes - 1
-    });
-    if (this.state.breakMinutes <= 1) this.setState({ breakMinutes: 1 });
+    if (this.state.startStop === false) {
+      if (this.state.sessionMounted) {
+        this.setState({
+          timeMinutes: this.state.timeMinutes + 1
+        });
+      }
+      this.setState({
+        sessionLength: this.state.sessionLength + 1
+      });
+      if (this.state.sessionLength >= 60) this.setState({ sessionLength: 60 });
+    }
   };
   handleBreakLengthDecrement = () => {
-    this.setState({
-      breakLength: this.state.breakLength - 1
-    });
-    this.handleBreakDecrement();
-    if (this.state.breakLength <= 1) this.setState({ breakLength: 1 });
-  };
-  handleBreakIncrement = () => {
-    this.setState({
-      breakMinutes: this.state.breakMinutes + 1
-    });
-    if (this.state.breakMinutes > 60) this.setState({ breakMinutes: 60 });
+    if (this.state.startStop === false) {
+      this.setState({
+        breakLength: this.state.breakLength - 1
+      });
+      if (this.state.breakLength <= 1) this.setState({ breakLength: 1 });
+    }
   };
   handleBreakLengthIncrement = () => {
-    this.setState({
-      breakLength: this.state.breakLength + 1
-    });
-    this.handleBreakIncrement();
-    if (this.state.breakLength >= 60) this.setState({ breakLength: 60 });
+    if (this.state.startStop === false) {
+      this.setState({
+        breakLength: this.state.breakLength + 1
+      });
+      if (this.state.breakLength >= 60) this.setState({ breakLength: 60 });
+    }
   };
   // use async/await to update state immediately
   handleStartStop = async () => {
@@ -84,103 +71,73 @@ class Pomodoro extends Component {
     }));
     // start session
     if (this.state.startStop) {
-      this.startStopSession();
+      this.startStopTimer();
     } else {
-      // pause session
-      clearInterval(this.sessionIntervalId);
-    }
-  };
-  // use async/await to update state immediately
-  pause = async () => {
-    await this.setState(prevState => ({
-      pauseBreak: !prevState.pauseBreak
-    }));
-    // pause
-    if (this.state.pauseBreak) {
-      clearInterval(this.breakIntervalId);
-    } else {
-      // resume
-      this.startStopBreak();
+    // pause session
+      clearInterval(this.timeIntervalId);
     }
   };
   handleReset = () => {
-    clearInterval(this.sessionIntervalId);
-    clearInterval(this.breakIntervalId);
+    clearInterval(this.timeIntervalId);
     this.setState({ ...this.initialState });
+    this.promise.pause();
+    this.promise.currentTime = 0;
   };
   playAudio = () => {
-    // if (this.state.triggerAudio) {
-      this.promise = document.querySelector("#beep");
-      this.promise.play();
+    this.promise.play();
+    // flip timer state
+    this.setState(prevState => ({
+      sessionMounted: !prevState.sessionMounted,
+    }));
+    //use setTimeout to only play audio for 2 seconds
+    setTimeout(() => {
+      this.promise.pause();
+      // reset respective timers to state user set
       const initialSessionMinutes = this.state.sessionLength;
       const initialBreakMinutes = this.state.breakLength;
-      setTimeout(() => {
-        this.promise.pause();
-        this.setState(prevState => ({
-          breakMounted: !prevState.breakMounted,
-          startMounted: !prevState.startMounted,
-        }));
-        if (this.state.breakMounted) {
-          this.setState({
-            breakMinutes: initialBreakMinutes,
-            breakSeconds: 60
-          });
-          this.startStopBreak();
-        } else if (this.state.startMounted) {
-          this.setState({
-            sessionMinutes: initialSessionMinutes,
-            sessionSeconds: 60
-          });
-          this.startStopSession();
-        }
-      }, 4000);
+      if (this.state.sessionMounted) {
+        this.setState({
+          timeMinutes: initialSessionMinutes,
+          timeSeconds: 60,
+          subOne: 0
+        });
+        this.startStopTimer();
+      } else {
+        this.setState({
+          timeMinutes: initialBreakMinutes,
+          timeSeconds: 60,
+          subOne: 0
+        });
+        this.startStopTimer();
+      }
       this.promise.currentTime = 0;
-    // }
+    }, 2000);
   };
-  startStopSession = () => {
-    this.setState({
-      triggerAudio: false
-    });
-    this.sessionIntervalId = setInterval(() => {
+  startStopTimer = () => {
+    this.timeIntervalId = setInterval(() => {
+      if (this.state.subOne <= 0) {
+        this.setState({
+          timeMinutes: this.state.timeMinutes - 1,
+          subOne: 1
+        })
+      }
       this.setState({
-        sessionSeconds: this.state.sessionSeconds - 1
+        timeSeconds: this.state.timeSeconds - 1
       });
       // seconds === 0, but minutes !== 0, subtract 1 from minutes and reset seconds
-      if (this.state.sessionSeconds === 0 && this.state.sessionMinutes !== 0) {
+      if (this.state.timeSeconds === 0 && this.state.timeMinutes !== 0) {
         this.setState({
-          sessionMinutes: this.state.sessionMinutes - 1,
-          sessionSeconds: 60
+          timeMinutes: this.state.timeMinutes - 1,
+          timeSeconds: 60
         });
       }
       //both minutes and seconds === 0, then clear
-      if (this.state.sessionSeconds === 0 && this.state.sessionMinutes === 0) {
-        clearInterval(this.sessionIntervalId);
+      if (this.state.timeSeconds === 0 && this.state.timeMinutes === 0) {
+        clearInterval(this.timeIntervalId);
         this.playAudio();
       }
     }, 1000);
   };
-  startStopBreak() {
-    this.setState({
-      triggerAudio: false
-    });
-    this.breakIntervalId = setInterval(() => {
-      this.setState({
-        breakSeconds: this.state.breakSeconds - 1
-      });
-      // seconds === 0, but minutes !== 0, subtract 1 from minutes and reset seconds
-      if (this.state.breakSeconds === 0 && this.state.breakMinutes !== 0) {
-        this.setState({
-          breakMinutes: this.state.breakMinutes - 1,
-          breakSeconds: 60
-        });
-      }
-      //both minutes and seconds === 0, then clear
-      if (this.state.breakSeconds === 0 && this.state.breakMinutes === 0) {
-        clearInterval(this.breakIntervalId);
-        this.playAudio();
-      }
-    }, 1000);
-  }
   render() {
     return (
       <div className="pomodoro">
@@ -191,10 +148,8 @@ class Pomodoro extends Component {
           <div id="break-increment" onClick={this.handleBreakLengthIncrement}>
             Break Increment
           </div>
-
           <h3 id="break-label">Break Length</h3>
           <div id="break-length">{this.state.breakLength}</div>
-          {this.state.breakMounted}
         </div>
         <div className="s-di">
           <div
@@ -212,31 +167,19 @@ class Pomodoro extends Component {
           <h3 id="session-label">Session Length</h3>
           <div id="session-length">{this.state.sessionLength}</div>
         </div>
-        {this.state.startMounted ? (
-          <div className="session-container">
-            <Session
-              sessMinutes={this.state.sessionMinutes}
-              sessSeconds={this.state.sessionSeconds}
-            />
-            <div
-              id="start_stop"
-              className="start-stop"
-              onClick={this.handleStartStop}
-            >
-              Start/Pause
-            </div>
-          </div>
-        ) : (
-          <div className="break-container">
-            <Break
-              brkMinutes={this.state.breakMinutes}
-              brkSeconds={this.state.breakSeconds}
-            />
-            <div id="start_stop" className="start-stop" onClick={this.pause}>
-              Start/Pause
-            </div>
-          </div>
-        )}
+        <Timer
+          startTime={this.startStopTimer}
+          timerMinutes={this.state.timeMinutes}
+          timerSeconds={this.state.timeSeconds}
+          sessionMounted={this.state.sessionMounted}
+        />
+        <div
+          id="start_stop"
+          className="start-stop"
+          onClick={this.handleStartStop}
+        >
+        Start/Pause
+        </div>
         <div id="reset" className="reset" onClick={this.handleReset}>
           Reset
         </div>
@@ -245,5 +188,4 @@ class Pomodoro extends Component {
     );
   }
 }
-
 export default Pomodoro;
